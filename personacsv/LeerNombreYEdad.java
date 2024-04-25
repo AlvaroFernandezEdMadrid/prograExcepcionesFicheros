@@ -1,17 +1,17 @@
-package primerarchivo;
+package personacsv;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
-public class LeerNombreyEdad {
+public class LeerNombreYEdad {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		String linea,nombre;
 		int edad;
 		
-		// try -catch con recursos, cierra sÃ³lo los recursos abiertos
+		// try -catch con recursos, cierra sólo los recursos abiertos
 		try (BufferedReader buffer = new BufferedReader(new FileReader ("mifichero.txt")))
 		{
 			while (buffer.ready())

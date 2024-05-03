@@ -23,9 +23,9 @@ public class Alumno implements Comparable<Alumno>
 	{
 		this(dni, "",LocalDate.now().minusYears(18), 1);
 	}
+	
 	public Alumno(String dni, String nombre, LocalDate fechaNacimiento, int nota) throws IllegalArgumentException
 	{
-		
 		this.dni = dni;
 		this.nombre = nombre;
 		setFechaNacimiento (fechaNacimiento);
@@ -70,7 +70,6 @@ public class Alumno implements Comparable<Alumno>
 	public void setNota(int nota) throws IllegalArgumentException{
 		if (nota < 1 || nota > 10)
 			throw new IllegalArgumentException("nota no permitida");
-		
 			
 		this.nota = nota;
 	}

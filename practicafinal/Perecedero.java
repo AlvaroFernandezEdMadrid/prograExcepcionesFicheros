@@ -30,10 +30,7 @@ public class Perecedero extends Producto {
 		return fechaCaducidad;
 	}
 
-	public void setFechaCaducidad(LocalDate fechaCaducidad) throws IllegalArgumentException{
-		if (fechaCaducidad.isAfter(LocalDate.now())) {
-			throw new IllegalArgumentException("\nFecha Incorrecta");
-		}
+	public void setFechaCaducidad(LocalDate fechaCaducidad){
 		
 		this.fechaCaducidad = fechaCaducidad;
 	}

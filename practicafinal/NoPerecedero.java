@@ -16,8 +16,6 @@ public class NoPerecedero extends Producto {
 
 	}
 
-
-
 	public NoPerecedero(String numRef) {
 		super(numRef);
 		setProcedencia(procedencia);
@@ -27,11 +25,9 @@ public class NoPerecedero extends Producto {
 		this("");
 	}
 
-
 	public String getProcedencia() {
 		return procedencia;
 	}
-
 
 	public void setProcedencia(String procedencia){
 		this.procedencia = procedencia;
@@ -65,9 +61,10 @@ public class NoPerecedero extends Producto {
 				setTipo(TipoProducto.valueOf(Teclado.leerString("\nTipo de producto: ").toUpperCase()));
 			} catch (IllegalArgumentException e) {
 				exito=false;
-				System.out.println(e.getMessage());
+				System.out.println("Tipo no permitido");
 			}
 		} while (!exito);
+		
 	}
 	
 	@Override

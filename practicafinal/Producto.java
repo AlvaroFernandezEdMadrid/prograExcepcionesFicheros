@@ -95,11 +95,24 @@ public abstract class Producto implements Comparable<Producto>{
 	
 	public void leerOtrosDatos() {
 		boolean exito;
+		
+		setNombre(Teclado.leerString("\nNombre: "));
+		
 		do {
 			try {
 				exito=true;
-				setNombre(Teclado.leerString("\nNombre: "));
 				setPrecioBase(Teclado.leerInt("\nPrecio Base: "));
+				setStock(Teclado.leerInt("\nStock: "));
+			} catch (IllegalArgumentException e) {
+				exito=false;
+				System.out.println(e.getMessage());
+				
+			}
+		} while (!exito);
+		
+		do {
+			try {
+				exito=true;
 				setStock(Teclado.leerInt("\nStock: "));
 			} catch (IllegalArgumentException e) {
 				exito=false;
@@ -115,7 +128,6 @@ public abstract class Producto implements Comparable<Producto>{
 			filtro.writeUTF(nombre);
 			filtro.writeFloat(precioBase);
 			filtro.writeInt(stock);
-			filtro.close();
 		} catch (IOException e) {
 			System.out.println(e.getStackTrace());
 		}

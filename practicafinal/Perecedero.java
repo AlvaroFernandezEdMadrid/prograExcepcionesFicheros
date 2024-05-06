@@ -50,6 +50,7 @@ public class Perecedero extends Producto {
 				System.out.println(e.getMessage());
 			}
 		} while (!exito);
+		
 	}
 	
 	@Override
@@ -58,7 +59,6 @@ public class Perecedero extends Producto {
 		
 		try {
 			filtro.writeUTF(fechaCaducidad.toString());
-			filtro.close();
 		} catch (IOException e) {
 			System.out.println(e.getStackTrace());
 		}
@@ -71,7 +71,7 @@ public class Perecedero extends Producto {
 		try {
 			setFechaCaducidad(LocalDate.parse(filtro.readUTF()));
 		} catch (IOException | DateTimeParseException | IllegalArgumentException e) {
-			System.out.println(e.getMessage());
+			fechaCaducidad=LocalDate.now().plusDays(1);
 		}
 	}
 	

@@ -8,27 +8,28 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.time.LocalDate;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
-import java.util.TreeMap;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import daw.com.Pantalla;
 import daw.com.Teclado;
 
-//leer clientes de fichero, anadir cliente a cada pedido, comprobar que esta el cliente en el conjunto, ir actualizando saldo.
+
 public class AppPracticaFinal extends AppConMenu {
 
 	private Map<String, Producto> productos;
-	private List<Cliente> clientes;
+	private Map<String, Cliente> clientes;
+	private List<Cesta> cestas;
 
+	
+	
 	public AppPracticaFinal() {
 		super();
 		addOpcion("Añadir producto");
@@ -36,14 +37,10 @@ public class AppPracticaFinal extends AppConMenu {
 		addOpcion("Servir pedido");
 		addOpcion("Mostrar lista precios");
 		addOpcion("Eliminar caducados");
-		addOpcion("importar csv");
-		addOpcion("exportar csv");
-		addOpcion("Salir");
 		
-
-		clientes=new ArrayList<Cliente>(cargarClientes());
-		
-		productos = new TreeMap<>();
+		productos = new HashMap<>();
+		clientes = new HashMap<>();
+		cestas = new ArrayList<>();
 	}
 
 	public static void main(String[] args) {
@@ -57,7 +54,27 @@ public class AppPracticaFinal extends AppConMenu {
 	
 	private void guardarDatos() {
 		// TODO Auto-generated method stub
+		guardarProductos();
+		guardarClientes();
+		guardarCestas ();
 		
+	}
+	
+	private void guardarCestas() {
+		// TODO Auto-generated method stub
+		try (PrintWriter filtro = new PrintWriter("cestas.csv"))
+		{
+			cestasToCsv().forEach(filtro::println);
+			
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			Pantalla.escribirString("\nerror escribiendo");
+		}
+		
+	}
+
+	private void guardarProductos ()
+	{
 		try (DataOutputStream filtro = new DataOutputStream (new FileOutputStream("productos.dat")))
 		{
 			filtro.writeInt(productos.size());
@@ -81,7 +98,71 @@ public class AppPracticaFinal extends AppConMenu {
 		
 	}
 
+	private void guardarClientes () 
+	{
+		try (PrintWriter filtro = new PrintWriter ("clientes.csv"))
+		{
+			clientes.values().
+					forEach(c -> filtro.println(c.toCsv()));
+			
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			Pantalla.escribirString("\nError escribiendo fichero..");
+		}
+		
+	}
 	private void leerDatos() {
+		leerProductos ();
+		leerClientes ();
+		leerCestas ();
+		
+	}
+	
+	private void leerCestas() {
+		// TODO Auto-generated method stub
+		String linea;
+		Cesta cesta;
+		try (BufferedReader filtro = new BufferedReader (new FileReader("cestas.csv")))
+		{
+			while (filtro.ready())
+			{
+				linea = filtro.readLine();
+				cesta = leerCesta (linea);
+				cestas.add(cesta);
+			}
+			
+		}  catch (IOException e) {
+			// TODO Auto-generated catch block
+			Pantalla.escribirString("\nerror leyendo fichero");
+		}
+		
+	}
+
+	private Cesta leerCesta(String linea) {
+		// TODO Auto-generated method stub
+		
+		int cuantos;
+		Producto p;
+		int cantidad;
+		Cesta cesta;
+		String valores[] = linea.split(":");
+		
+		cesta = new Cesta (clientes.get(valores[0]));
+		
+		cuantos = Integer.valueOf(valores[1]);
+		
+		for (int i = 0; i < cuantos; i++)
+		{
+			p = productos.get(valores[i+2]);
+			cantidad = Integer.valueOf(valores[i+3]);
+			cesta.insertarProducto(p, cantidad);
+		}
+		
+		return cesta;
+	}
+
+	private void leerProductos ()
+	{
 		// TODO Auto-generated method stub
 		String tipoProducto;
 		Producto p;
@@ -110,6 +191,28 @@ public class AppPracticaFinal extends AppConMenu {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			Pantalla.escribirString("\nNo hay datos guardados");
+		}
+		
+	}
+	
+	private void leerClientes ()
+	{
+		Cliente cliente;
+		String linea;
+		
+		try(BufferedReader filtro = new BufferedReader (new FileReader("clientes.csv")))
+		{
+			while (filtro.ready())
+			{
+				linea = filtro.readLine();
+				cliente = new Cliente ();
+				cliente.fromCsv(linea);
+				clientes.put(cliente.getNif(), cliente);
+			}
+			
+		}  catch (IOException e) {
+			// TODO Auto-generated catch block
+			Pantalla.escribirString("\nNo se ha podido leer fichero");
 		}
 		
 	}
@@ -191,53 +294,58 @@ public class AppPracticaFinal extends AppConMenu {
 	private void hacerPedido() {
 		// TODO Auto-generated method stub
 		String referencia;
-		Map<Producto,Integer> cesta;
-		cesta = new TreeMap<>();
+		Cesta cesta;
 		int unidades,stock;
 		Producto p;
-		float total = 0;
+		String nif;
+		Cliente cliente;
 		
+		nif = Teclado.leerString("\nnif del cliente ");
+		cliente = clientes.get(nif);
 		
-		do
+		if (cliente != null)
 		{
-			referencia = Teclado.leerString("\nreferencia ");
-			p = productos.get(referencia);
-			if (p != null)
+			cesta = new Cesta(cliente);
+		
+			do
 			{
-				unidades = Libreria.leerEnteroPositivo("\nunidades ");
-				stock = p.getStock();
-				
-				if (stock >= unidades)
+				referencia = Teclado.leerString("\nreferencia ");
+				p = productos.get(referencia);
+				if (p != null)
 				{
-					
-					if (cesta.containsKey(p))
-						cesta.put(p, cesta.get(p)+ unidades);
-					else 
-						cesta.put(p, unidades);
-					
-					// Actualizar stock
-					p.setStock(p.getStock() - unidades);
+					unidades = Libreria.leerEnteroPositivo("\nunidades ");
+					stock = p.getStock();
+
+					if (stock >= unidades && 
+							cliente.getSaldo() > cesta.getTotal() + (unidades * p.getPrecioVenta()))
+					{
+						cesta.insertarProducto(p, unidades);
+						// Actualizar stock
+						p.setStock(p.getStock() - unidades);
+					}
+					else
+						Pantalla.escribirString("\nProducto no añadido al pedido por falta de stock o de saldo");
+
 				}
 				else
-					Pantalla.escribirString("\nProducto no añadido al pedido por falta de stock");
-				
+					Pantalla.escribirString("\nNo existe producto con esa referencia");
+
+			}while (Teclado.leerString("\nseguir?(s/n)").equals("s"));
+
+
+			for (Entry<Producto,Integer> e : cesta.getCesta().entrySet())
+			{
+				Pantalla.escribirString("\n" + e.getKey().getNombre() + "," 
+						+ e.getValue());
 			}
-			else
-				Pantalla.escribirString("\nNo existe producto con esa referencia");
-			
-		}while (Teclado.leerString("\nseguir?(s/n)").equals("s"));
-		
-		
-		for (Entry<Producto,Integer> e : cesta.entrySet())
-		{
-			Pantalla.escribirString("\n" + e.getKey().getNombre() + "," 
-								+ e.getValue());
-			
-			total += (e.getKey().getPrecioVenta() * e.getValue());
+			Pantalla.escribirString("\nTotal pedido :" + cesta.getTotal());
+			cliente.setSaldo(cliente.getSaldo() - cesta.getTotal());
+			Pantalla.escribirString("\nEl saldo actual del cliente es " + cliente.getSaldo());
+			// Añadir la cesta al conjunto de todas las cestas
+			cestas.add(cesta);
 		}
-		
-				
-		Pantalla.escribirString("\nTotal pedido :" + total);
+		else
+			Pantalla.escribirString("\nNo existe el cliente");
 		
 	}
 
@@ -317,29 +425,42 @@ public class AppPracticaFinal extends AppConMenu {
 		Pantalla.escribirString("\nTotal dinero por productos caducados " + total);
 		
 	}
-	
-	public Set<Cliente> cargarClientes() {
-		Set<Cliente> clientes=new HashSet<Cliente>();
-		Cliente c;
-		String linea;
-		
-		try (BufferedReader buffer=new BufferedReader(new FileReader("Clientes.csv"))){
-			while (buffer.ready()) {
-				linea=buffer.readLine();
-				c=new Cliente();
-				c.fromCSV(linea);
-				clientes.add(c);
-			}
-		} catch (IOException e) {
-			System.out.println("\nError leyendo archivo...");
-		}
-	
-		return clientes;
-	}
 
 	private void salir() {
 		// TODO Auto-generated method stub
 		Pantalla.escribirString("\nChao Bambino");
 	}
+	
+
+	public List<String> cestasToCsv() {
+
+		List<String> lineas = new ArrayList<String>();
+
+		for (Cesta c : cestas) 
+		{
+
+			String linea = "";
+			linea += c.getCliente().getNif();
+			linea += ":";
+			linea += c.getCesta().values().size();
+
+			for (Entry<Producto, Integer> e : c.getCesta().entrySet()) 
+			{
+				linea += ":";
+				// producto
+				linea += e.getKey().getReferencia();
+				linea += ":";
+				// cantidad
+				linea += e.getValue().toString();
+			}
+
+			lineas.add(linea);
+		}
+
+		return lineas;
+
+	}
+
+
 
 }

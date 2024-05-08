@@ -1,8 +1,9 @@
-package practicafinalprofe;
+package deportistas;
 
 import java.util.ArrayList;
 
 import daw.com.Pantalla;
+import daw.com.Teclado;
 
 
 public abstract class AppConMenu {
@@ -10,21 +11,21 @@ public abstract class AppConMenu {
 	
 	public AppConMenu ()
 	{
-		opciones = new ArrayList<String>();
+		opciones = new ArrayList();
 	}
 	
 	public AppConMenu (ArrayList<String> opciones)
 	{
-		this.opciones = new ArrayList<String>(opciones);
+		this.opciones = new ArrayList(opciones);
 	}
 	
 
 	public ArrayList<String> getOpciones() {
-		return new ArrayList<String>(opciones);
+		return new ArrayList(opciones);
 	}
 
 	public void setOpciones(ArrayList<String> opciones) {
-		this.opciones = new ArrayList<String>(opciones);
+		this.opciones = new ArrayList(opciones);
 	}
 
 	public boolean addOpcion (String opcion)

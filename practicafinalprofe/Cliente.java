@@ -1,7 +1,5 @@
 package practicafinalprofe;
 
-import java.time.LocalDate;
-
 public class Cliente {
 	private final String SEPARADOR=",";
 	

@@ -1,18 +1,18 @@
 package practicafinalprofe;
 
-import java.lang.reflect.InvocationTargetException;
-
 public class FactoriaProducto {
 	public static Producto build (String tipo) throws IllegalArgumentException
 	{
 		Producto p;
 		
+		tipo.toLowerCase();
+		
 		switch (tipo)
 		{
-			case "Perecedero" :
+			case "perecedero" :
 				p = new Perecedero ();
 				break;
-			case "NoPerecedero":
+			case "noperecedero":
 				p = new NoPerecedero ();
 				break;
 			default:

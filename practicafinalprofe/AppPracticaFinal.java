@@ -1,14 +1,17 @@
 package practicafinalprofe;
 
+import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -36,6 +39,9 @@ public class AppPracticaFinal extends AppConMenu {
 		addOpcion("importar csv");
 		addOpcion("exportar csv");
 		addOpcion("Salir");
+		
+
+		clientes=new ArrayList<Cliente>(cargarClientes());
 		
 		productos = new TreeMap<>();
 	}
@@ -191,6 +197,7 @@ public class AppPracticaFinal extends AppConMenu {
 		Producto p;
 		float total = 0;
 		
+		
 		do
 		{
 			referencia = Teclado.leerString("\nreferencia ");
@@ -312,14 +319,22 @@ public class AppPracticaFinal extends AppConMenu {
 	}
 	
 	public Set<Cliente> cargarClientes() {
-		Set<Cliente> clientes;
+		Set<Cliente> clientes=new HashSet<Cliente>();
 		Cliente c;
 		String linea;
 		
-		
-		
-		
-		return null;
+		try (BufferedReader buffer=new BufferedReader(new FileReader("Clientes.csv"))){
+			while (buffer.ready()) {
+				linea=buffer.readLine();
+				c=new Cliente();
+				c.fromCSV(linea);
+				clientes.add(c);
+			}
+		} catch (IOException e) {
+			System.out.println("\nError leyendo archivo...");
+		}
+	
+		return clientes;
 	}
 
 	private void salir() {

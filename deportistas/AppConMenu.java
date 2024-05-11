@@ -3,7 +3,6 @@ package deportistas;
 import java.util.ArrayList;
 
 import daw.com.Pantalla;
-import daw.com.Teclado;
 
 
 public abstract class AppConMenu {
@@ -11,21 +10,21 @@ public abstract class AppConMenu {
 	
 	public AppConMenu ()
 	{
-		opciones = new ArrayList();
+		opciones = new ArrayList<String>();
 	}
 	
 	public AppConMenu (ArrayList<String> opciones)
 	{
-		this.opciones = new ArrayList(opciones);
+		this.opciones = new ArrayList<String>(opciones);
 	}
 	
 
 	public ArrayList<String> getOpciones() {
-		return new ArrayList(opciones);
+		return new ArrayList<String>(opciones);
 	}
 
 	public void setOpciones(ArrayList<String> opciones) {
-		this.opciones = new ArrayList(opciones);
+		this.opciones = new ArrayList<String>(opciones);
 	}
 
 	public boolean addOpcion (String opcion)

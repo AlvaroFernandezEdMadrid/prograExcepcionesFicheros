@@ -8,10 +8,7 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Function;
-import java.util.function.ToIntFunction;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import daw.com.Pantalla;
@@ -65,6 +62,7 @@ public class PruebaStream {
 		
 	}
 	
+	@SuppressWarnings("deprecation")
 	public static List<Deportista> cargarDatosBinario ()
 	{
 		String tipo;

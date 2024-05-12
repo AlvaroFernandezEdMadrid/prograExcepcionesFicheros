@@ -103,10 +103,33 @@ public class Tienda {
 		
 		try (BufferedReader buffer=new BufferedReader(new FileReader ("productos.csv"))) {
 			while (buffer.ready()) {
-				
+				p=new Producto();
+				linea=buffer.readLine();
+				p.fromCsv(linea);
+				if (!productos.containsKey(p.getId())) {
+					productos.put(p.getId(), p);
+				}
 			}
 		} catch (IOException e) {
-			// TODO: handle exception
+			System.out.println("\nError leyendo archivo...");
+		}
+	}
+	
+	public void clientesFromCsv() {
+		String linea;
+		Cliente c;
+		
+		try (BufferedReader buffer=new BufferedReader(new FileReader ("clientes.csv"))) {
+			while (buffer.ready()) {
+				c=new Cliente();
+				linea=buffer.readLine();
+				c.fromCsv(linea);
+				if (!clientes.containsKey(c.getNif())) {
+					clientes.put(c.getNif(), c);
+				}
+			}
+		} catch (IOException e) {
+			System.out.println("\nError leyendo archivo...");
 		}
 	}
 

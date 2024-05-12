@@ -1,6 +1,5 @@
 package deportistas;
 
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
@@ -8,7 +7,6 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.function.Consumer;
 
-import daw.com.Pantalla;
 
 public class ColeccionDeportistas  {
 

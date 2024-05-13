@@ -26,30 +26,30 @@ public class Tienda {
 	public Tienda() {
 		this("");
 	}
-	
+
 	public String getNombre() {
 		return nombre;
 	}
-	
+
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
 	}
-	
+
 	public Map<String, Cliente> getClientes() {
 		return clientes;
 	}
-	
+
 	public void setClientes(Map<String, Cliente> clientes) {
 		if (clientes==null) {
 			clientes=new TreeMap<String, Cliente>();
 		}
 		this.clientes = clientes;
 	}
-	
+
 	public Map<String, Producto> getProductos() {
 		return productos;
 	}
-	
+
 	public void setProductos(Map<String, Producto> productos) {
 		if (productos==null) {
 			productos=new TreeMap<String, Producto>();
@@ -61,46 +61,44 @@ public class Tienda {
 	public boolean addProducto() {
 		boolean exito;
 		Producto p;
-		
+
 		p=new Producto();
-		
+
 		do {
 			p.leerClave();
-			
-			if (!productos.containsKey(p.getId())) {
+
+			if (!clientes.containsKey(p.getId())) {
 				exito=true;
-				productos.put(nombre, p);
-			}else
+				p.leerOtrosDatos();
+				productos.put(p.getId(), p);
+			}else {
 				exito=false;
 				System.out.println("\nEl producto ya existe");
+			}
+
 		} while (!exito);
-		
+
 		return exito;
 	}
-	
+
 	public boolean removeProducto() {
 		boolean exito;
-		String cual;
-		
-		cual=Teclado.leerString("\nId del producto a eliminar: ");
-		
-		do {
-			try {
-				exito=true;
-				productos.remove(cual);
-			} catch (Exception e) {
-				exito=false;
-				System.err.println("\nError eliminando...");
-			}
-		} while (!exito);
-		
+
+		if (productos.remove(Teclado.leerString("ID del Producto a eliminar: ")) != null) {
+			exito=true;
+			System.out.println("Producto eliminado con exito");
+		}else{
+			exito=false;
+			System.out.println("Error eliminando producto");
+		}
+
 		return exito;
 	}
-	
+
 	public void productosFromCsv() {
 		String linea;
 		Producto p;
-		
+
 		try (BufferedReader buffer=new BufferedReader(new FileReader ("productos.csv"))) {
 			while (buffer.ready()) {
 				p=new Producto();
@@ -114,11 +112,11 @@ public class Tienda {
 			System.out.println("\nError leyendo archivo...");
 		}
 	}
-	
+
 	public void clientesFromCsv() {
 		String linea;
 		Cliente c;
-		
+
 		try (BufferedReader buffer=new BufferedReader(new FileReader ("clientes.csv"))) {
 			while (buffer.ready()) {
 				c=new Cliente();
@@ -132,5 +130,45 @@ public class Tienda {
 			System.out.println("\nError leyendo archivo...");
 		}
 	}
+
+	public boolean addCliente() {
+		boolean exito;
+		Cliente c;
+
+		c=new Cliente();
+
+		do {
+			c.leerClave();
+
+			if (!clientes.containsKey(c.getNif())) {
+				exito=true;
+				c.leerOtrosDatos();
+				clientes.put(c.getNif(), c);
+			}else {
+				exito=false;
+				System.out.println("\nEl cliente ya existe");
+			}
+
+		} while (!exito);
+
+		return exito;
+	}
+
+	public boolean removeCliente() {
+		boolean exito;
+
+		if (clientes.remove(Teclado.leerString("ID del cliente a eliminar: ")) != null) {
+			exito=true;
+			System.out.println("Cliente eliminado con exito");
+		}else {
+			exito=false;
+			System.out.println("Error eliminando cliente");
+		}
+			
+
+		return exito;
+	}
+
+	
 
 }

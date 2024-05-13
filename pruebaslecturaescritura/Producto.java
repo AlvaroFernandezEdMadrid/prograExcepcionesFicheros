@@ -107,11 +107,11 @@ public class Producto implements Comparable<Producto>{
 	}
 	
 	public void leerClave() {
-		id=Teclado.leerString();
+		id=Teclado.leerString("Id: ");
 	}
 	
 	public void leerOtrosDatos() {
-		nombre=Teclado.leerString();
+		nombre=Teclado.leerString("Nombre: ");
 	}
 	
 	public void mostrarDatos() {

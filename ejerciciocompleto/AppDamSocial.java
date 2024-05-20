@@ -11,10 +11,7 @@ import java.util.function.Consumer;
 import daw.com.Pantalla;
 import daw.com.Teclado;
 
-
-
 public class AppDamSocial extends AppConMenu {
-
 	private DamSocial damSocial;
 	
 	public AppDamSocial ()
